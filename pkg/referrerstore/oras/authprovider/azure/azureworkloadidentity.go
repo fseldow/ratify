@@ -41,9 +41,7 @@ type azureWIAuthProviderConf struct {
 }
 
 const (
-	azureWIAuthProviderName      string = "azureWorkloadIdentity"
-	dockerTokenLoginUsernameGUID string = "00000000-0000-0000-0000-000000000000"
-	AADResource                  string = "https://containerregistry.azure.net/.default"
+	azureWIAuthProviderName string = "azureWorkloadIdentity"
 )
 
 // init calls Register for our Azure Workload Identity provider
@@ -169,7 +167,7 @@ func getAADAccessToken(ctx context.Context, tenantID string) (confidential.AuthR
 		return confidential.AuthResult{}, errors.Wrap(err, "failed to create confidential client app")
 	}
 
-	result, err := confidentialClientApp.AcquireTokenByCredential(ctx, []string{AADResource})
+	result, err := confidentialClientApp.AcquireTokenByCredential(ctx, []string{AADResourcePublicCloud})
 	if err != nil {
 		return confidential.AuthResult{}, errors.Wrap(err, "failed to acquire AAD token")
 	}

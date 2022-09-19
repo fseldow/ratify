@@ -36,6 +36,7 @@ build-plugins:
 .PHONY: install
 install: 
 	mkdir -p ${INSTALL_DIR}
+	mkdir -p ${INSTALL_DIR}/ratify-certs
 	cp -r ./bin/* ${INSTALL_DIR}
 
 .PHONY: test
@@ -63,11 +64,13 @@ delete-ratify:
 
 .PHONY: deploy-demo-constraints
 deploy-demo-constraints:	
-	kubectl apply -f ./charts/ratify-gatekeeper/templates/constraint.yaml	 
+	kubectl apply -f ./library/default/template.yaml
+	kubectl apply -f ./library/default/samples/constraint.yaml
 
 .PHONY: delete-demo-constraints
 delete-demo-constraints:
-	kubectl delete -f ./charts/ratify-gatekeeper/templates/constraint.yaml
+	kubectl delete -f ./library/default/template.yaml
+	kubectl delete -f ./library/default/samples/constraint.yaml
 
 .PHONY: deploy-gatekeeper
 deploy-gatekeeper:
