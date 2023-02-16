@@ -35,6 +35,10 @@ spec:
               artifactTypes:
                 description: The type of artifact this verifier handles
                 type: string
+                enum: ["application/vnd.cncf.notary.signature"]
+                x-kubernetes-validations:
+                - rule: "!(self == 'application/vnd.cncf.notary.signature')" 
+                  message: currently only 'application/vnd.cncf.notary.signature' is supported for AKS Image Integrity addon
               name:
                 description: Name of the verifier
                 type: string

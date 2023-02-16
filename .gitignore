@@ -12,3 +12,7 @@ certs/
 
 # IDE files
 .vscode/settings.json
+
+mycharts/
+generate-tls-certs.sh
+kubeconfig
