@@ -71,7 +71,6 @@ const (
 type OrasStoreConf struct {
 	Name           string                          `json:"name"`
 	UseHttp        bool                            `json:"useHttp,omitempty"`
-	CosignEnabled  bool                            `json:"cosignEnabled,omitempty"`
 	AuthProvider   authprovider.AuthProviderConfig `json:"authProvider,omitempty"`
 	LocalCachePath string                          `json:"localCachePath,omitempty"`
 }
@@ -228,14 +227,6 @@ func (store *orasStore) ListReferrers(ctx context.Context, subjectReference comm
 	referrers := []ocispecs.ReferenceDescriptor{}
 	for _, referrer := range referrerDescriptors {
 		referrers = append(referrers, OciDescriptorToReferenceDescriptor(referrer))
-	}
-
-	if store.config.CosignEnabled {
-		cosignReferences, err := getCosignReferences(subjectReference)
-		if err != nil {
-			return referrerstore.ListReferrersResult{}, err
-		}
-		referrers = append(referrers, *cosignReferences...)
 	}
 
 	return referrerstore.ListReferrersResult{Referrers: referrers}, nil
