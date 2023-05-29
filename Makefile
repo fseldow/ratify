@@ -33,6 +33,10 @@ GATEKEEPER_NAMESPACE = gatekeeper-system
 RATIFY_NAME = ratify
 
 # Local Registry Setup
+RATIFY_CRD_REPO ?= localbuild
+RATIFY_REPO ?= localbuild
+IMAGE_TAG ?= test
+
 LOCAL_REGISTRY_IMAGE ?= ghcr.io/oras-project/registry:v1.0.0-rc.4
 LOCAL_UNSIGNED_IMAGE = hello-world:latest
 TEST_REGISTRY = localhost:5000
@@ -421,19 +425,19 @@ e2e-deploy-gatekeeper: e2e-helm-install
     --set auditInterval=0
 
 e2e-deploy-ratify: e2e-notaryv2-setup e2e-notation-leaf-cert-setup e2e-cosign-setup e2e-cosign-setup e2e-licensechecker-setup e2e-sbom-setup e2e-schemavalidator-setup e2e-inlinecert-setup
-	docker build --progress=plain --no-cache -f ./httpserver/Dockerfile -t localbuild:test .
-	kind load docker-image --name kind localbuild:test
+	# docker build --progress=plain --no-cache -f ./httpserver/Dockerfile -t ${RATIFY_REPO}:${IMAGE_TAG} .
+	# kind load docker-image --name kind localbuild:${IMAGE_TAG}
 
-	docker build --progress=plain --no-cache --build-arg KUBE_VERSION=${KUBERNETES_VERSION} --build-arg TARGETOS="linux" --build-arg TARGETARCH="amd64" -f crd.Dockerfile -t localbuildcrd:test ./charts/ratify/crds
-	kind load docker-image --name kind localbuildcrd:test
+	docker build --progress=plain --no-cache --build-arg KUBE_VERSION=${KUBERNETES_VERSION} --build-arg TARGETOS="linux" --build-arg TARGETARCH="amd64" -f crd.Dockerfile -t ${RATIFY_CRD_REPO}:${IMAGE_TAG} ./charts/ratify/crds
+	kind load docker-image --name kind ${RATIFY_CRD_REPO}:${IMAGE_TAG}
 
 	echo -e "{\n\t\"auths\": {\n\t\t\"registry:5000\": {\n\t\t\t\"auth\": \"`echo "${TEST_REGISTRY_USERNAME}:${TEST_REGISTRY_PASSWORD}" | tr -d '\n' | base64 -i -w 0`\"\n\t\t}\n\t}\n}" > mount_config.json
 
 	./.staging/helm/linux-amd64/helm install ${RATIFY_NAME} \
     ./charts/ratify --atomic --namespace ${GATEKEEPER_NAMESPACE} --create-namespace \
-	--set image.repository=localbuild \
-	--set image.crdRepository=localbuildcrd \
-	--set image.tag=test \
+	--set image.repository=${RATIFY_REPO} \
+	--set image.crdRepository=${RATIFY_CRD_REPO} \
+	--set image.tag=${IMAGE_TAG} \
 	--set gatekeeper.version=${GATEKEEPER_VERSION} \
 	--set-file provider.tls.crt=${CERT_DIR}/server.crt \
 	--set-file provider.tls.key=${CERT_DIR}/server.key \
