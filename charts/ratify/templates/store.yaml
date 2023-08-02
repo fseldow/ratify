@@ -23,6 +23,7 @@ spec:
     authProvider:
       name: azureManagedIdentity
       clientID: {{ .Values.azureManagedIdentity.clientId }}
+      tenantID: {{ .Values.azureWorkloadIdentity.tenantId }}
     {{- end }}
     {{- if .Values.oras.authProviders.k8secretsEnabled }}
     authProvider:

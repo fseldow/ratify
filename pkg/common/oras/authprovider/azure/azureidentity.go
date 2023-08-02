@@ -42,6 +42,7 @@ type azureManagedIdentityAuthProvider struct {
 type azureManagedIdentityAuthProviderConf struct {
 	Name     string `json:"name"`
 	ClientID string `json:"clientID"`
+	TenantID string `json:"tenantID"`
 }
 
 var (
@@ -72,15 +73,18 @@ func (s *azureManagedIdentityProviderFactory) Create(authProviderConfig provider
 		return nil, fmt.Errorf("failed to parse azure managed identity auth provider configuration: %w", err)
 	}
 
-	tenant := os.Getenv("AZURE_TENANT_ID")
+	tenant := conf.TenantID
 	if tenant == "" {
-		return nil, fmt.Errorf("AZURE_TENANT_ID environment variable is empty")
+		tenant = os.Getenv("AZURE_TENANT_ID")
+		if tenant == "" {
+			return nil, fmt.Errorf("tenant id of azure managed identity is missing")
+		}
 	}
-	client := os.Getenv("AZURE_CLIENT_ID")
+	client := conf.ClientID
 	if client == "" {
-		client = conf.ClientID
+		client = os.Getenv("AZURE_CLIENT_ID")
 		if client == "" {
-			return nil, fmt.Errorf("AZURE_CLIENT_ID environment variable is empty")
+			return nil, fmt.Errorf("client id of azure managed identity is missing")
 		}
 	}
 	if err != nil {

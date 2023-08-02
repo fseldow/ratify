@@ -19,6 +19,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
@@ -61,17 +62,17 @@ func TestAzureMSIValidation_EnvironmentVariables_ExpectedResults(t *testing.T) {
 
 	err := os.Setenv("AZURE_TENANT_ID", "")
 	if err != nil {
-		t.Fatal("failed to set env variable AZURE_TENANT_ID")
+		t.Fatal("tenant id of azure managed identity is missing")
 	}
 
 	err = os.Setenv("AZURE_CLIENT_ID", "")
 	if err != nil {
-		t.Fatal("failed to set env variable AZURE_CLIENT_ID")
+		t.Fatal("client id of azure managed identity is missing")
 	}
 
 	_, err = authprovider.CreateAuthProviderFromConfig(authProviderConfig)
 
-	expectedErr := fmt.Errorf("AZURE_TENANT_ID environment variable is empty")
+	expectedErr := fmt.Errorf("tenant id of azure managed identity is missing")
 	if err == nil || err.Error() != expectedErr.Error() {
 		t.Fatalf("create auth provider should have failed: expected err %s, but got err %s", expectedErr, err)
 	}
@@ -83,8 +84,21 @@ func TestAzureMSIValidation_EnvironmentVariables_ExpectedResults(t *testing.T) {
 
 	_, err = authprovider.CreateAuthProviderFromConfig(authProviderConfig)
 
-	expectedErr = fmt.Errorf("AZURE_CLIENT_ID environment variable is empty")
+	expectedErr = fmt.Errorf("client id of azure managed identity is missing")
 	if err == nil || err.Error() != expectedErr.Error() {
 		t.Fatalf("create auth provider should have failed: expected err %s, but got err %s", expectedErr, err)
+	}
+}
+
+func TestAzureMSIValidation_ConfigurationVariables_ExpectedResults(t *testing.T) {
+	authProviderConfig := map[string]interface{}{
+		"name":     "azureManagedIdentity",
+		"clientID": "1234",
+		"tenantID": "1234",
+	}
+	_, err := authprovider.CreateAuthProviderFromConfig(authProviderConfig)
+
+	if strings.Contains(err.Error(), "of azure managed identity is missing") {
+		t.Fatalf("create auth provider should have sufficient parameter input, get err: %s", err)
 	}
 }
