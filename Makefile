@@ -527,7 +527,7 @@ e2e-build-crd-image:
 	docker build --progress=plain --no-cache --build-arg KUBE_VERSION=${KUBERNETES_VERSION} --build-arg TARGETOS="linux" --build-arg TARGETARCH="amd64" -f crd.Dockerfile -t localbuildcrd:test ./charts/ratify/crds
 	kind load docker-image --name kind localbuildcrd:test
 
-e2e-deploy-base-ratify: e2e-notation-setup e2e-notation-leaf-cert-setup e2e-inlinecert-setup e2e-build-crd-image
+e2e-deploy-base-ratify: e2e-notation-setup e2e-notation-leaf-cert-setup e2e-inlinecert-setup e2e-build-crd-image e2e-cosign-setup e2e-cosign-setup
 	docker build --progress=plain --no-cache \
 	-f ./httpserver/Dockerfile \
 	-t baselocalbuild:test .
@@ -548,8 +548,9 @@ e2e-deploy-base-ratify: e2e-notation-setup e2e-notation-leaf-cert-setup e2e-inli
     --set-file provider.tls.caKey=${CERT_DIR}/ca.key \
 	--set provider.tls.cabundle="$(shell cat ${CERT_DIR}/ca.crt | base64 | tr -d '\n')" \
 	--set notationCerts[0]="$$(cat ~/.config/notation/localkeys/ratify-bats-test.crt)" \
+	--set cosignKeys[0]="$$(cat .staging/cosign/cosign.pub)" \
+	--set cosign.key="$$(cat .staging/cosign/cosign.pub)" \
 	--set oras.useHttp=true \
-	--set cosign.enabled=false \
 	--set-file dockerConfig="mount_config.json" \
 	--set logger.level=debug
 
