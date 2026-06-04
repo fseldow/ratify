@@ -1,55 +1,42 @@
-name: Release Ratify
+name: Test Dockerfile Go Version
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 permissions: read-all
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+  test-dockerfile-go-version:
+    name: Test Dockerfile Go Version
+    runs-on: ubuntu-22.04
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
-        with:
-          egress-policy: audit
-
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=3.0.2
-        with:
-          fetch-depth: 0
+        uses: actions/checkout@v4
 
-      - name: Install Syft
-        uses: anchore/sbom-action/download-syft@df80a981bc6edbc4e220a492d3cbe9f5547a6e75 # v0.17.9
-
-      - name: Set up Go
-        uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5.2.0
+      - name: Set up Go from publish CI setting
+        uses: actions/setup-go@v5
         with:
           go-version: "1.26"
+          check-latest: true
 
-      - name: Goreleaser
-        id: goreleaser
-        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
-        with:
-          version: "2.0.1"
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate SBOM
+      - name: Show runner Go version
         run: |
-          curl -Lo $RUNNER_TEMP/sbom-tool https://github.com/microsoft/sbom-tool/releases/latest/download/sbom-tool-linux-x64
-          chmod +x $RUNNER_TEMP/sbom-tool
-          $RUNNER_TEMP/sbom-tool generate -b . -bc . -pn ratify -pv $GITHUB_REF_NAME -ps Microsoft -nsb https://microsoft.com -V Verbose
+          echo "Runner Go version from setup-go go-version=1.26:"
+          go version
 
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # tag=v4.5.0
-        with:
-          name: SBOM SPDX files
-          path: _manifest/spdx_2.2/**
+      - name: Show Dockerfile builder version
+        run: |
+          echo "Dockerfile builder line:"
+          grep -n '^FROM .*golang:' httpserver/Dockerfile
+
+      - name: Build image from Dockerfile
+        run: |
+          docker build -f httpserver/Dockerfile -t ratify-go-version-test:local .
+
+      - name: Show final image binary Go version
+        run: |
+          cid=$(docker create ratify-go-version-test:local)
+          docker cp "$cid:/app/ratify" ./ratify
+          docker rm "$cid"
+          echo "Final image /app/ratify Go build info:"
+          go version -m ./ratify | sed -n '1,25p'
