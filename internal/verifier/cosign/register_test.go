@@ -754,7 +754,7 @@ func TestToVerifierOptions(t *testing.T) {
 						"keys": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA...\n-----END PUBLIC KEY-----",
 					},
 				},
-				IgnoreTLog:  true,  // Should be overridden to false for key-based
+				IgnoreTLog:  true,  // Should be respected for key-based
 				IgnoreCTLog: false, // Should be overridden to true for key-based
 			},
 			wantErr:     true, // inline provider not registered in test context
