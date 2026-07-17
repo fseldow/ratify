@@ -1,0 +1,217 @@
+{
+  "config": {
+    "protocol_version": "v1.0.0",
+    "scanner_name": "govulncheck",
+    "scanner_version": "v1.6.0",
+    "db": "https://vuln.go.dev",
+    "db_last_modified": "2026-07-08T17:05:00Z",
+    "go_version": "go1.26.5",
+    "scan_level": "symbol",
+    "scan_mode": "source"
+  }
+}
+govulncheck: loading packages: 
+There are errors with the provided package patterns:
+
+pkg/common/plugin/download.go:33:2: missing go.sum entry for module providing package oras.land/oras-go/v2/registry/remote (imported by github.com/ratify-project/ratify/pkg/common/plugin); to add:
+	go get github.com/ratify-project/ratify/pkg/common/plugin
+pkg/common/plugin/download.go:34:2: missing go.sum entry for module providing package oras.land/oras-go/v2/registry/remote/auth (imported by github.com/ratify-project/ratify/pkg/common/plugin); to add:
+	go get github.com/ratify-project/ratify/pkg/common/plugin
+/home/runner/work/ratify/ratify/pkg/common/plugin/download.go:33:2: could not import oras.land/oras-go/v2/registry/remote (invalid package name: "")
+/home/runner/work/ratify/ratify/pkg/common/plugin/download.go:34:2: could not import oras.land/oras-go/v2/registry/remote/auth (invalid package name: "")
+../../../go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: missing go.sum entry for module providing package oras.land/oras-go/v2 (imported by github.com/notaryproject/notation-go/registry); to add:
+	go get github.com/notaryproject/notation-go/registry@v1.3.2
+../../../go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: missing go.sum entry for module providing package oras.land/oras-go/v2/content (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:17:2: could not import bytes (no metadata for bytes)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:18:2: could not import context (no metadata for context)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:19:2: could not import encoding/json (no metadata for encoding/json)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:20:2: could not import errors (no metadata for errors)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:21:2: could not import fmt (no metadata for fmt)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:22:2: could not import os (no metadata for os)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:24:2: could not import github.com/notaryproject/notation-go/registry/internal/artifactspec (no metadata for github.com/notaryproject/notation-go/registry/internal/artifactspec)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:25:10: could not import github.com/opencontainers/image-spec/specs-go/v1 (no metadata for github.com/opencontainers/image-spec/specs-go/v1)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: could not import oras.land/oras-go/v2 (no metadata for oras.land/oras-go/v2)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: could not import oras.land/oras-go/v2/content (no metadata for oras.land/oras-go/v2/content)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: could not import oras.land/oras-go/v2/content/oci (no metadata for oras.land/oras-go/v2/content/oci)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: could not import oras.land/oras-go/v2/errdef (no metadata for oras.land/oras-go/v2/errdef)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: could not import oras.land/oras-go/v2/registry (no metadata for oras.land/oras-go/v2/registry)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:57:2: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:43:14: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:27: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:45: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:38: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:80: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:82:61: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:109:36: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:149:18: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:211:10: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:9: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:47: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:290:27: undefined: ArtifactTypeNotation
+../../../go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: missing go.sum entry for module providing package oras.land/oras-go/v2/content/oci (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:17:2: could not import bytes (no metadata for bytes)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:18:2: could not import context (no metadata for context)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:19:2: could not import encoding/json (no metadata for encoding/json)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:20:2: could not import errors (no metadata for errors)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:21:2: could not import fmt (no metadata for fmt)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:22:2: could not import os (no metadata for os)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:24:2: could not import github.com/notaryproject/notation-go/registry/internal/artifactspec (no metadata for github.com/notaryproject/notation-go/registry/internal/artifactspec)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:25:10: could not import github.com/opencontainers/image-spec/specs-go/v1 (no metadata for github.com/opencontainers/image-spec/specs-go/v1)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: could not import oras.land/oras-go/v2 (no metadata for oras.land/oras-go/v2)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: could not import oras.land/oras-go/v2/content (no metadata for oras.land/oras-go/v2/content)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: could not import oras.land/oras-go/v2/content/oci (no metadata for oras.land/oras-go/v2/content/oci)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: could not import oras.land/oras-go/v2/errdef (no metadata for oras.land/oras-go/v2/errdef)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: could not import oras.land/oras-go/v2/registry (no metadata for oras.land/oras-go/v2/registry)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:57:2: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:43:14: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:27: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:45: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:38: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:80: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:82:61: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:109:36: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:149:18: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:211:10: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:9: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:47: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:290:27: undefined: ArtifactTypeNotation
+../../../go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: missing go.sum entry for module providing package oras.land/oras-go/v2/errdef (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:17:2: could not import bytes (no metadata for bytes)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:18:2: could not import context (no metadata for context)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:19:2: could not import encoding/json (no metadata for encoding/json)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:20:2: could not import errors (no metadata for errors)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:21:2: could not import fmt (no metadata for fmt)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:22:2: could not import os (no metadata for os)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:24:2: could not import github.com/notaryproject/notation-go/registry/internal/artifactspec (no metadata for github.com/notaryproject/notation-go/registry/internal/artifactspec)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:25:10: could not import github.com/opencontainers/image-spec/specs-go/v1 (no metadata for github.com/opencontainers/image-spec/specs-go/v1)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: could not import oras.land/oras-go/v2 (no metadata for oras.land/oras-go/v2)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: could not import oras.land/oras-go/v2/content (no metadata for oras.land/oras-go/v2/content)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: could not import oras.land/oras-go/v2/content/oci (no metadata for oras.land/oras-go/v2/content/oci)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: could not import oras.land/oras-go/v2/errdef (no metadata for oras.land/oras-go/v2/errdef)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: could not import oras.land/oras-go/v2/registry (no metadata for oras.land/oras-go/v2/registry)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:57:2: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:43:14: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:27: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:45: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:38: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:80: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:82:61: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:109:36: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:149:18: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:211:10: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:9: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:47: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:290:27: undefined: ArtifactTypeNotation
+../../../go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: missing go.sum entry for module providing package oras.land/oras-go/v2/registry (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:17:2: could not import bytes (no metadata for bytes)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:18:2: could not import context (no metadata for context)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:19:2: could not import encoding/json (no metadata for encoding/json)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:20:2: could not import errors (no metadata for errors)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:21:2: could not import fmt (no metadata for fmt)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:22:2: could not import os (no metadata for os)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:24:2: could not import github.com/notaryproject/notation-go/registry/internal/artifactspec (no metadata for github.com/notaryproject/notation-go/registry/internal/artifactspec)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:25:10: could not import github.com/opencontainers/image-spec/specs-go/v1 (no metadata for github.com/opencontainers/image-spec/specs-go/v1)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: could not import oras.land/oras-go/v2 (no metadata for oras.land/oras-go/v2)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: could not import oras.land/oras-go/v2/content (no metadata for oras.land/oras-go/v2/content)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: could not import oras.land/oras-go/v2/content/oci (no metadata for oras.land/oras-go/v2/content/oci)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: could not import oras.land/oras-go/v2/errdef (no metadata for oras.land/oras-go/v2/errdef)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: could not import oras.land/oras-go/v2/registry (no metadata for oras.land/oras-go/v2/registry)
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:57:2: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:43:14: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:27: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:45: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:38: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:80: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:82:61: undefined: Repository
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:109:36: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:149:18: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:211:10: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:9: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:47: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:290:27: undefined: ArtifactTypeNotation
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:26:2: could not import oras.land/oras-go/v2 (invalid package name: "")
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: registry redeclared in this block
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: 	other declaration of registry
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: registry redeclared in this block
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: 	other declaration of registry
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: registry redeclared in this block
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: 	other declaration of registry
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:57:2: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:65:27: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:73:38: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:225:61: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:244:53: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:90:19: undefined: oci
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:130:14: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:134:18: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:145:13: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:149:18: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:171:14: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:175:23: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:211:10: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:9: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:218:47: undefined: oras
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:236:127: undefined: errdef
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:256:20: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:264:35: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:273:20: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:281:32: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:27:2: "oras.land/oras-go/v2/content" imported as registry and not used
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:28:2: "oras.land/oras-go/v2/content/oci" imported as registry and not used
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:29:2: "oras.land/oras-go/v2/errdef" imported as registry and not used
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/registry/repository.go:30:2: "oras.land/oras-go/v2/registry" imported and not used
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/notation.go:30:2: could not import oras.land/oras-go/v2/registry/remote (invalid package name: "")
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/notation.go:120:30: undefined: orasRegistry.ParseReference
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/notation.go:368:27: undefined: orasRegistry.ParseReference
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/verifier/verifier.go:237:6: undefined: content
+/home/runner/go/pkg/mod/github.com/notaryproject/notation-go@v1.3.2/verifier/verifier.go:29:2: "oras.land/oras-go/v2/content" imported as registry and not used
+pkg/referrerstore/oras/oras.go:37:2: missing go.sum entry for module providing package oras.land/oras-go/v2/registry/remote/errcode (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+pkg/referrerstore/oras/oras.go:38:2: missing go.sum entry for module providing package oras.land/oras-go/v2/registry/remote/retry (imported by github.com/ratify-project/ratify/pkg/referrerstore/oras); to add:
+	go get github.com/ratify-project/ratify/pkg/referrerstore/oras
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/cosign.go:30:2: registry redeclared in this block
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/cosign.go:29:2: 	other declaration of registry
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:33:2: registry redeclared in this block
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:31:2: 	other declaration of registry
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:34:2: registry redeclared in this block
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:31:2: 	other declaration of registry
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:35:2: could not import oras.land/oras-go/v2/registry/remote (invalid package name: "")
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:36:2: could not import oras.land/oras-go/v2/registry/remote/auth (invalid package name: "")
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:37:2: could not import oras.land/oras-go/v2/registry/remote/errcode (invalid package name: "")
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:38:2: could not import oras.land/oras-go/v2/registry/remote/retry (invalid package name: "")
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:92:21: undefined: content
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:96:103: undefined: registry.Repository
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/cosign.go:36:102: undefined: registry.Repository
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:411:107: undefined: registry.Repository
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/cosign.go:45:21: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:146:34: undefined: ocitarget.New
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:232:36: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:305:92: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:351:124: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:403:32: undefined: registry.ParseReference
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:415:31: undefined: registry.ParseReference
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/cosign.go:30:2: "oras.land/oras-go/v2/registry" imported and not used
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:33:2: "oras.land/oras-go/v2/errdef" imported as registry and not used
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/oras.go:34:2: "oras.land/oras-go/v2/registry" imported and not used
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:25:2: registry redeclared in this block
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:24:2: 	other declaration of registry
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:25:2: registry redeclared in this block
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:24:2: 	other declaration of registry
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:29:11: undefined: registry.Repository
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:38:11: undefined: registry.BlobStore
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:29:2: undefined: content
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:68:42: undefined: registry.BlobStore
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:54:27: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:65:14: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:76:32: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:61:14: undefined: errdef
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_repository.go:25:2: "oras.land/oras-go/v2/registry" imported and not used
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:24:2: "oras.land/oras-go/v2/content" imported as registry and not used
+/home/runner/work/ratify/ratify/pkg/referrerstore/oras/mocks/oras_storage.go:25:2: "oras.land/oras-go/v2/errdef" imported as registry and not used
+
+For details on package patterns, see https://pkg.go.dev/cmd/go#hdr-Package_lists_and_patterns.
+
