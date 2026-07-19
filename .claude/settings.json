@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod *)",
+      "Bash(git -C /Users/fseldow/program/ratify remote -v)",
+      "Bash(python3 -c \"import base64; print\\(base64.b64encode\\(open\\('/tmp/release14_gomod.txt','rb'\\).read\\(\\)\\).decode\\(\\)\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(git commit *)",
+      "Bash(git -c commit.gpgsign=false commit -m \"fix: clean up vulncheck output and extract GO- IDs as fallback\")",
+      "Bash(go get *)",
+      "Bash(GONOSUMCHECK=* GOFLAGS= GONOPROXY= GONOSUMDB= GOPROXY=https://proxy.golang.org,direct go get golang.org/x/net@v0.23.0)",
+      "Bash(GOPROXY=https://proxy.golang.org,direct go get golang.org/x/crypto@v0.31.0)",
+      "Bash(sed -i '' 's|oras.land/oras-go/v2 v2.6.2|oras.land/oras-go/v2 v2.6.0|' go.mod)",
+      "Bash(GOPROXY=https://proxy.golang.org,direct go mod tidy)",
+      "Bash(GOPROXY=https://proxy.golang.org,direct govulncheck ./...)",
+      "Bash(GOPROXY=https://proxy.golang.org,direct go run golang.org/x/vuln/cmd/govulncheck@latest ./...)",
+      "Bash(git -c commit.gpgsign=false commit -m \"fix: handle govulncheck exit codes correctly\")",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(GOPROXY=https://proxy.golang.org,direct go get golang.org/x/crypto@v0.35.0)",
+      "Bash(sed -i '' 's|golang.org/x/crypto v0.53.0|golang.org/x/crypto v0.35.0|' go.mod)",
+      "Bash(git -c commit.gpgsign=false commit -m \"debug: add govulncheck output logging\")"
+    ]
+  }
+}
