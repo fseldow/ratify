@@ -282,7 +282,6 @@ EOF
 }
 
 @test "cosign test" {
-    skip "v2 cosign verifier forces IgnoreTLog=false for key-based verification, needs code fix to respect user config"
     teardown() {
         echo "cleaning up"
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod cosign-demo-key --namespace default --force --ignore-not-found=true'

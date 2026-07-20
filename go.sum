@@ -217,6 +217,8 @@ github.com/fortytw2/leaktest v1.3.0 h1:u8491cBMTQ8ft8aeV+adlcytMZylmA5nnwwkRZjI8
 github.com/fortytw2/leaktest v1.3.0/go.mod h1:jDsjWgpAGjm2CA7WthBh/CdZYEPF31XHquHwclZch5g=
 github.com/foxcpp/go-mockdns v1.1.0 h1:jI0rD8M0wuYAxL7r/ynTrCQQq0BVqfB99Vgk7DlmewI=
 github.com/foxcpp/go-mockdns v1.1.0/go.mod h1:IhLeSFGed3mJIAXPH2aiRQB+kqz7oqu8ld2qVbOu7Wk=
+github.com/fseldow/ratify-verifier-go/cosign v0.0.2 h1:kQDOOIjfyia5DEyVl+xoWU5aiP8ks282wR64r1AZJ9I=
+github.com/fseldow/ratify-verifier-go/cosign v0.0.2/go.mod h1:72+ZCMFOaiT7iHOoYVn4zClaTRSThpbr0ovOOsenLtw=
 github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=
 github.com/fsnotify/fsnotify v1.9.0/go.mod h1:8jBTzvmWwFyi3Pb8djgCCO5IBqzKJ/Jwo8TRcHyHii0=
 github.com/fxamacker/cbor/v2 v2.9.0 h1:NpKPmjDBgUfBms6tr6JZkTHtfFGcMKsw3eGcmD/sapM=
@@ -465,8 +467,6 @@ github.com/notaryproject/notation-plugin-framework-go v1.0.0 h1:6Qzr7DGXoCgXEQN+
 github.com/notaryproject/notation-plugin-framework-go v1.0.0/go.mod h1:RqWSrTOtEASCrGOEffq0n8pSg2KOgKYiWqFWczRSics=
 github.com/notaryproject/ratify-go v0.0.0-20250912144645-8f7f89aff329 h1:QPU718mRBUw+RLgU8uN55Y3IbUUWdcy0A5BUrHNI6wU=
 github.com/notaryproject/ratify-go v0.0.0-20250912144645-8f7f89aff329/go.mod h1:skeFG5In355I3GUZj25V5glopSbWDcbY8u/fhwgX+E0=
-github.com/notaryproject/ratify-verifier-go/cosign v0.0.0-20250912090755-582a09910433 h1:BSt96EvpwQo5ca4SRIbeUSfO5+zOEuyXraVpQOdFEGg=
-github.com/notaryproject/ratify-verifier-go/cosign v0.0.0-20250912090755-582a09910433/go.mod h1:4+5h2tJp96UF2jNqaK6SV1ne5+kweyREtaRrN2oXrvM=
 github.com/notaryproject/ratify-verifier-go/notation v0.0.0-20250523045711-b622738d577a h1:Q4B+c5a2hSk93D6d1qteXhMAZnHaWxfJ5A6gefDRF94=
 github.com/notaryproject/ratify-verifier-go/notation v0.0.0-20250523045711-b622738d577a/go.mod h1:mXQTrTrQvOov3awSbT0jEdpf76l8SSfYPyGKDQdq5KY=
 github.com/notaryproject/tspclient-go v1.0.0 h1:AwQ4x0gX8IHnyiZB1tggpn5NFqHpTEm1SDX8YNv4Dg4=
