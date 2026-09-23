@@ -1,0 +1,92 @@
+/*
+Copyright The Ratify Authors.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package licensechecker
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/notaryproject/ratify/v2/internal/verifier"
+)
+
+func TestNewVerifier(t *testing.T) {
+	tests := []struct {
+		name        string
+		opts        verifier.NewOptions
+		wantErr     bool
+		errContains string
+	}{
+		{
+			name: "invalid parameters json",
+			opts: verifier.NewOptions{
+				Name:       "lc",
+				Type:       verifierTypeLicenseChecker,
+				Parameters: make(chan int),
+			},
+			wantErr:     true,
+			errContains: "failed to marshal verifier parameters",
+		},
+		{
+			name: "empty name",
+			opts: verifier.NewOptions{
+				Name:       "",
+				Type:       verifierTypeLicenseChecker,
+				Parameters: map[string]any{"allowedLicenses": []string{"MIT"}},
+			},
+			wantErr:     true,
+			errContains: "name or type is not provided",
+		},
+		{
+			name: "valid with single artifactType string",
+			opts: verifier.NewOptions{
+				Name: "lc",
+				Type: verifierTypeLicenseChecker,
+				Parameters: map[string]any{
+					"artifactTypes":   "application/vnd.ratify.spdx.v0",
+					"allowedLicenses": []string{"MIT", "Apache-2.0"},
+				},
+			},
+		},
+		{
+			name: "valid with artifactTypes array",
+			opts: verifier.NewOptions{
+				Name: "lc",
+				Type: verifierTypeLicenseChecker,
+				Parameters: map[string]any{
+					"artifactTypes":   []string{"application/vnd.ratify.spdx.v0"},
+					"allowedLicenses": []string{"MIT"},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v, err := verifier.New(tt.opts, []string{"*"})
+			if (err != nil) != tt.wantErr {
+				t.Fatalf("New() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if tt.wantErr {
+				if tt.errContains != "" && (err == nil || !strings.Contains(err.Error(), tt.errContains)) {
+					t.Fatalf("New() error = %v, want contains %q", err, tt.errContains)
+				}
+				return
+			}
+			if v.Type() != verifierTypeLicenseChecker {
+				t.Fatalf("Type() = %s, want %s", v.Type(), verifierTypeLicenseChecker)
+			}
+		})
+	}
+}
