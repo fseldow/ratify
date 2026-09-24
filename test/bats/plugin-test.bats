@@ -48,31 +48,17 @@ restore_executor() {
     fi
 }
 
-# apply_scenario_executor renders and applies an Executor CR (replacing the
-# Helm-deployed one by name) that contains a single plugin verifier and a
-# threshold policy requiring it. It then waits for the controller to reconcile.
+# apply_scenario_executor patches the Helm-deployed Executor CR so that it uses a
+# single plugin verifier and a threshold policy requiring it, while keeping the
+# original stores (registry credentials) and scopes intact. It then waits for the
+# controller to reconcile.
 # $1: verifier YAML block (already indented to sit under "verifiers:")
 # $2: verifier name to require in the threshold policy
 apply_scenario_executor() {
     local verifier_block="$1"
     local verifier_name="$2"
-    cat <<EOF | kubectl apply -f -
-apiVersion: config.ratify.sh/v2beta1
-kind: Executor
-metadata:
-  name: ${EXECUTOR_NAME}
+    kubectl patch executors.config.ratify.sh/${EXECUTOR_NAME} --type merge -p "$(cat <<EOF
 spec:
-  scopes:
-    - ${TEST_REGISTRY}
-  concurrency: 3
-  stores:
-    - type: registry-store
-      parameters:
-        credential:
-          provider: static
-          username: "${TEST_REGISTRY_USERNAME}"
-          password: "${TEST_REGISTRY_PASSWORD}"
-        plainHttp: true
   verifiers:
 ${verifier_block}
   policyEnforcer:
@@ -83,6 +69,7 @@ ${verifier_block}
         rules:
           - verifierName: "${verifier_name}"
 EOF
+)"
     # wait for the executor to be reconciled and the httpserver cache to refresh
     wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "kubectl get executors.config.ratify.sh/${EXECUTOR_NAME} -n ${RATIFY_NAMESPACE} -o jsonpath='{.status.succeeded}' | grep true"
     sleep 15
