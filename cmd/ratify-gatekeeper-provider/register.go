@@ -30,8 +30,12 @@ import (
 	_ "github.com/notaryproject/ratify/v2/internal/store/credentialprovider/static"       // Register the static credential provider factory
 
 	// Register verifiers
-	_ "github.com/notaryproject/ratify/v2/internal/verifier/cosign"   // Register the Cosign verifier
-	_ "github.com/notaryproject/ratify/v2/internal/verifier/notation" // Register the Notation verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/cosign"              // Register the Cosign verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/licensechecker"      // Register the license checker verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/notation"            // Register the Notation verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/sbom"                // Register the SBOM verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/schemavalidator"     // Register the schema validator verifier
+	_ "github.com/notaryproject/ratify/v2/internal/verifier/vulnerabilityreport" // Register the vulnerability report verifier
 
 	// Register key providers
 	_ "github.com/notaryproject/ratify/v2/internal/verifier/keyprovider/azurekeyvault"      // Register the Azure Key Vault key provider
