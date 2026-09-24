@@ -19,6 +19,74 @@ BATS_TESTS_DIR=${BATS_TESTS_DIR:-test/bats/tests}
 WAIT_TIME=60
 SLEEP_TIME=1
 RATIFY_NAMESPACE=gatekeeper-system
+EXECUTOR_NAME=ratify-gatekeeper-provider-executor-1
+TEST_REGISTRY=${TEST_REGISTRY:-registry:5000}
+TEST_REGISTRY_USERNAME=${TEST_REGISTRY_USERNAME:-username}
+TEST_REGISTRY_PASSWORD=${TEST_REGISTRY_PASSWORD:-password}
+ORIGINAL_EXECUTOR_FILE="${BATS_FILE_TMPDIR:-/tmp}/original-executor.yaml"
+
+# snapshot_executor saves the Helm-deployed Executor CR so it can be restored
+# after a test replaces it with a scenario-specific Executor.
+snapshot_executor() {
+    if [ ! -f "${ORIGINAL_EXECUTOR_FILE}" ]; then
+        kubectl get executors.config.ratify.sh/${EXECUTOR_NAME} -o yaml \
+            | grep -v '^\s*resourceVersion:' \
+            | grep -v '^\s*uid:' \
+            | grep -v '^\s*creationTimestamp:' \
+            | grep -v '^\s*generation:' \
+            > "${ORIGINAL_EXECUTOR_FILE}" || true
+    fi
+}
+
+# restore_executor re-applies the original Helm-deployed Executor CR so that
+# subsequent test files (e.g. base-test.bats on the second test-e2e run) keep a
+# working notation executor.
+restore_executor() {
+    if [ -f "${ORIGINAL_EXECUTOR_FILE}" ]; then
+        kubectl apply -f "${ORIGINAL_EXECUTOR_FILE}" || true
+        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "kubectl get executors.config.ratify.sh/${EXECUTOR_NAME} -n ${RATIFY_NAMESPACE} -o jsonpath='{.status.succeeded}' | grep true"
+    fi
+}
+
+# apply_scenario_executor renders and applies an Executor CR (replacing the
+# Helm-deployed one by name) that contains a single plugin verifier and a
+# threshold policy requiring it. It then waits for the controller to reconcile.
+# $1: verifier YAML block (already indented to sit under "verifiers:")
+# $2: verifier name to require in the threshold policy
+apply_scenario_executor() {
+    local verifier_block="$1"
+    local verifier_name="$2"
+    cat <<EOF | kubectl apply -f -
+apiVersion: config.ratify.sh/v2beta1
+kind: Executor
+metadata:
+  name: ${EXECUTOR_NAME}
+spec:
+  scopes:
+    - ${TEST_REGISTRY}
+  concurrency: 3
+  stores:
+    - type: registry-store
+      parameters:
+        credential:
+          provider: static
+          username: "${TEST_REGISTRY_USERNAME}"
+          password: "${TEST_REGISTRY_PASSWORD}"
+        plainHttp: true
+  verifiers:
+${verifier_block}
+  policyEnforcer:
+    type: threshold-policy
+    parameters:
+      policy:
+        threshold: 1
+        rules:
+          - verifierName: "${verifier_name}"
+EOF
+    # wait for the executor to be reconciled and the httpserver cache to refresh
+    wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "kubectl get executors.config.ratify.sh/${EXECUTOR_NAME} -n ${RATIFY_NAMESPACE} -o jsonpath='{.status.succeeded}' | grep true"
+    sleep 15
+}
 
 @test "helm genCert test" {
     HELM=${GITHUB_WORKSPACE}/.staging/helm/linux-amd64/helm
@@ -82,12 +150,11 @@ RATIFY_NAMESPACE=gatekeeper-system
 }
 
 @test "licensechecker test" {
-    skip "TODO: migrate to v2 executor CRD"
     teardown() {
         echo "cleaning up"
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod license-checker --namespace default --force --ignore-not-found=true'
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod license-checker2 --namespace default --force --ignore-not-found=true'
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete verifiers.config.ratify.deislabs.io/verifier-license-checker --namespace default --ignore-not-found=true'
+        restore_executor
     }
 
     run kubectl apply -f ./library/multi-tenancy-validation/template.yaml
@@ -96,24 +163,52 @@ RATIFY_NAMESPACE=gatekeeper-system
     run kubectl apply -f ./library/multi-tenancy-validation/samples/constraint.yaml
     assert_success
     sleep 5
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_partial_licensechecker.yaml
-    sleep 5
-    run kubectl run license-checker --namespace default --image=registry:5000/licensechecker:v0
+    snapshot_executor
+
+    # partial allow list: the SPDX packages use licenses not in the allow list,
+    # so verification fails and the pod is denied.
+    apply_scenario_executor "    - name: licensechecker-1
+      type: licensechecker
+      parameters:
+        artifactTypes: application/vnd.ratify.spdx.v0
+        allowedLicenses:
+          - MIT" "licensechecker-1"
+    run kubectl run license-checker --namespace default --image=${TEST_REGISTRY}/licensechecker:v0
     assert_failure
 
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_complete_licensechecker.yaml
-    # wait for the httpserver cache to be invalidated
-    sleep 15
-    run kubectl run license-checker2 --namespace default --image=registry:5000/licensechecker:v0
+    # complete allow list: every package license is allowed, so the pod is
+    # admitted.
+    apply_scenario_executor "    - name: licensechecker-1
+      type: licensechecker
+      parameters:
+        artifactTypes: application/vnd.ratify.spdx.v0
+        allowedLicenses:
+          - GPL-2.0-only
+          - MIT
+          - OpenSSL
+          - BSD-2-Clause AND BSD-3-Clause
+          - Zlib
+          - MPL-2.0 AND MIT
+          - ISC
+          - Apache-2.0
+          - MIT AND BSD-2-Clause AND GPL-2.0-or-later
+          - MIT AND LicenseRef-AND AND BSD-2-Clause AND LicenseRef-AND AND GPL-2.0-or-later
+          - MPL-2.0 AND LicenseRef-AND AND MIT
+          - BSD-2-Clause AND LicenseRef-AND AND BSD-3-Clause
+          - NONE
+          - NOASSERTION
+          - \"\"" "licensechecker-1"
+    run kubectl run license-checker2 --namespace default --image=${TEST_REGISTRY}/licensechecker:v0
     assert_success
 }
 
 @test "sbom verifier test" {
-    skip "TODO: migrate to v2 executor CRD"
     teardown() {
         echo "cleaning up"
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod sbom --namespace default --force --ignore-not-found=true'
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod sbom2 --namespace default --force --ignore-not-found=true'
+        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod sbom3 --namespace default --force --ignore-not-found=true'
+        restore_executor
     }
 
     run kubectl apply -f ./library/multi-tenancy-validation/template.yaml
@@ -122,64 +217,51 @@ RATIFY_NAMESPACE=gatekeeper-system
     run kubectl apply -f ./library/multi-tenancy-validation/samples/constraint.yaml
     assert_success
     sleep 5
+    snapshot_executor
 
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_sbom_deny.yaml
-    sleep 5
-    run kubectl run sbom --namespace default --image=registry:5000/sbom:v0
+    # disallowed license present in the SBOM -> verification fails.
+    apply_scenario_executor "    - name: sbom-1
+      type: sbom
+      parameters:
+        artifactTypes: application/spdx+json
+        disallowedLicenses:
+          - NOASSERTION" "sbom-1"
+    run kubectl run sbom --namespace default --image=${TEST_REGISTRY}/sbom:v0
     assert_failure
 
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_sbom.yaml
-    # wait for the httpserver cache to be invalidated
-    sleep 15
-    run kubectl run sbom --namespace default --image=registry:5000/sbom:v0
+    # deny list that matches nothing in the SBOM -> verification succeeds.
+    apply_scenario_executor "    - name: sbom-1
+      type: sbom
+      parameters:
+        artifactTypes: application/spdx+json
+        disallowedPackages:
+          - name: zlib
+            version: 1.2.13-r1" "sbom-1"
+    run kubectl run sbom2 --namespace default --image=${TEST_REGISTRY}/sbom:v0
     assert_success
 
-    run kubectl delete verifiers.config.ratify.deislabs.io/verifier-sbom
-    assert_success
-    # wait for the httpserver cache to be invalidated
-    sleep 15
-    run kubectl run sbom2 --namespace default --image=registry:5000/sbom:v0
+    # deny list that matches a package in the SBOM -> verification fails.
+    apply_scenario_executor "    - name: sbom-1
+      type: sbom
+      parameters:
+        artifactTypes: application/spdx+json
+        disallowedPackages:
+          - name: zlib
+            version: 1.2.13-r0" "sbom-1"
+    run kubectl run sbom3 --namespace default --image=${TEST_REGISTRY}/sbom:v0
     assert_failure
 }
 
 @test "schemavalidator verifier test" {
-    skip "Skipping test for now until expected usage/configuration of this plugin can be verified"
-    teardown() {
-        echo "cleaning up"
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete verifiers.config.ratify.deislabs.io/verifier-license-checker --namespace default --ignore-not-found=true'
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete verifiers.config.ratify.deislabs.io/verifier-sbom --namespace default --ignore-not-found=true'
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete verifiers.config.ratify.deislabs.io/verifier-schemavalidator --namespace default --ignore-not-found=true'
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod schemavalidator --namespace default --force --ignore-not-found=true'
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod schemavalidator2 --namespace default --force --ignore-not-found=true'
-    }
-
-    run kubectl apply -f ./library/multi-tenancy-validation/template.yaml
-    assert_success
-    sleep 5
-    run kubectl apply -f ./library/multi-tenancy-validation/samples/constraint.yaml
-    assert_success
-    sleep 5
-
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_schemavalidator.yaml
-    sleep 5
-    run kubectl run schemavalidator --namespace default --image=registry:5000/schemavalidator:v0
-    assert_success
-
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_schemavalidator_bad.yaml
-    assert_success
-    # wait for the httpserver cache to be invalidated
-    sleep 15
-    run kubectl run schemavalidator2 --namespace default --image=registry:5000/schemavalidator:v0
-    assert_failure
+    skip "TODO: migrate to v2 executor CRD (requires mounting the JSON schema file into the provider pod)"
 }
 
 @test "vulnerabilityreport verifier test" {
-    skip "TODO: migrate to v2 executor CRD"
     teardown() {
         echo "cleaning up"
-        wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete verifiers.config.ratify.deislabs.io/verifier-vulnerabilityreport --namespace default --ignore-not-found=true'
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod vulnerabilityreport --namespace default --force --ignore-not-found=true'
         wait_for_process ${WAIT_TIME} ${SLEEP_TIME} 'kubectl delete pod vulnerabilityreport2 --namespace default --force --ignore-not-found=true'
+        restore_executor
     }
 
     run kubectl apply -f ./library/multi-tenancy-validation/template.yaml
@@ -188,16 +270,27 @@ RATIFY_NAMESPACE=gatekeeper-system
     run kubectl apply -f ./library/multi-tenancy-validation/samples/constraint.yaml
     assert_success
     sleep 5
+    snapshot_executor
 
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_vulnerabilityreport2.yaml
-    sleep 5
-    run kubectl run vulnerabilityreport --namespace default --image=registry:5000/vulnerabilityreport:v0
-    assert_success
-    sleep 15
-    run kubectl apply -f ./config/samples/clustered/verifier/config_v1beta1_verifier_vulnerabilityreport.yaml
-    sleep 5
-    run kubectl run vulnerabilityreport2 --namespace default --image=registry:5000/vulnerabilityreport:v0
+    # report older than the maximum allowed age -> verification fails.
+    apply_scenario_executor "    - name: vulnerabilityreport-1
+      type: vulnerabilityreport
+      parameters:
+        artifactTypes: application/sarif+json
+        maximumAge: 1s" "vulnerabilityreport-1"
+    run kubectl run vulnerabilityreport --namespace default --image=${TEST_REGISTRY}/vulnerabilityreport:v0
     assert_failure
+
+    # fresh report with a deny list that does not match -> verification succeeds.
+    apply_scenario_executor "    - name: vulnerabilityreport-1
+      type: vulnerabilityreport
+      parameters:
+        artifactTypes: application/sarif+json
+        maximumAge: 8760h
+        denylistCVEs:
+          - CVE-2021-44228" "vulnerabilityreport-1"
+    run kubectl run vulnerabilityreport2 --namespace default --image=${TEST_REGISTRY}/vulnerabilityreport:v0
+    assert_success
 }
 
 @test "sbom/notary/cosign/licensechecker/schemavalidator verifiers test" {
