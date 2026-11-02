@@ -448,97 +448,6 @@ func TestStripNamespacePrefix(t *testing.T) {
 	}
 }
 
-func TestNormalizeReference(t *testing.T) {
-	tests := []struct {
-		name     string
-		input    string
-		expected string
-	}{
-		{
-			name:     "Empty reference",
-			input:    "",
-			expected: "",
-		},
-		{
-			name:     "Official image",
-			input:    "nginx",
-			expected: "docker.io/library/nginx",
-		},
-		{
-			name:     "Official image with tag",
-			input:    "nginx:1.27",
-			expected: "docker.io/library/nginx:1.27",
-		},
-		{
-			name:     "Official image with digest",
-			input:    "nginx@sha256:abc123",
-			expected: "docker.io/library/nginx@sha256:abc123",
-		},
-		{
-			name:     "Docker Hub user image",
-			input:    "org/app:v1",
-			expected: "docker.io/org/app:v1",
-		},
-		{
-			name:     "Docker Hub user image with nested path",
-			input:    "org/team/app:v1",
-			expected: "docker.io/org/team/app:v1",
-		},
-		{
-			name:     "Docker Hub official image without library namespace",
-			input:    "docker.io/nginx:1.27",
-			expected: "docker.io/library/nginx:1.27",
-		},
-		{
-			name:     "Fully qualified Docker Hub image",
-			input:    "docker.io/library/nginx:1.27",
-			expected: "docker.io/library/nginx:1.27",
-		},
-		{
-			name:     "Registry with domain",
-			input:    "registry.example.com/app:v1",
-			expected: "registry.example.com/app:v1",
-		},
-		{
-			name:     "Registry with domain and single component repository",
-			input:    "registry.example.com/app",
-			expected: "registry.example.com/app",
-		},
-		{
-			name:     "Registry with port",
-			input:    "registry:5000/notation@sha256:abc123",
-			expected: "registry:5000/notation@sha256:abc123",
-		},
-		{
-			name:     "Localhost registry",
-			input:    "localhost/app:v1",
-			expected: "localhost/app:v1",
-		},
-		{
-			name:     "IPv6 registry",
-			input:    "[2001:db8::1]:5000/repo:tag",
-			expected: "[2001:db8::1]:5000/repo:tag",
-		},
-		{
-			name:     "Uppercase first component",
-			input:    "Registry/app:v1",
-			expected: "Registry/app:v1",
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			result := NormalizeReference(test.input)
-			if result != test.expected {
-				t.Errorf("expected %q, got %q", test.expected, result)
-			}
-			if again := NormalizeReference(result); again != result {
-				t.Errorf("expected normalization to be idempotent, got %q from %q", again, result)
-			}
-		})
-	}
-}
-
 func TestValidateArtifact(t *testing.T) {
 	scopedExecutor := &ScopedExecutor{
 		wildcard: map[string]*ratify.Executor{
@@ -631,4 +540,27 @@ func registerMocks() {
 		verifier.Register(mockVerifierType, createMockVerifier)
 		policyenforcer.Register(mockPolicyEnforcerType, createPolicyEnforcer)
 	})
+}
+
+// Repository scopes are normalized in the same way as the references routed
+// to them, so that "docker.io/nginx" and "org/app" cover "nginx:latest" and
+// "org/app:v1".
+func TestRegisterExecutor_NormalizesRepositoryScope(t *testing.T) {
+	scopedExecutor := &ScopedExecutor{}
+	executor := &ratify.Executor{Store: &mockStore{}}
+	for _, scope := range []string{"docker.io/nginx", "org/app"} {
+		if err := scopedExecutor.registerExecutor(scope, executor); err != nil {
+			t.Fatalf("failed to register scope %q: %v", scope, err)
+		}
+	}
+
+	for _, artifact := range []string{"nginx:latest", "docker.io/library/nginx:1.27", "org/app:v1", "[default]org/app:v1"} {
+		if _, err := scopedExecutor.Resolve(context.Background(), artifact); err != nil {
+			t.Errorf("expected %q to match a normalized repository scope, got: %v", artifact, err)
+		}
+	}
+
+	if err := scopedExecutor.registerExecutor("docker.io/library/nginx", executor); err == nil {
+		t.Error("expected an error for a scope that normalizes to an already registered scope, got nil")
+	}
 }

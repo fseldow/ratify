@@ -19,6 +19,7 @@ import (
 	"fmt"
 
 	"github.com/notaryproject/ratify-go"
+	"github.com/notaryproject/ratify/v2/internal/imageref"
 )
 
 // NewOptions defines the options for creating a new [ratify.Store].
@@ -77,7 +78,9 @@ func New(opts []NewOptions, globalScopes []string) (ratify.Store, error) {
 		if err != nil {
 			return nil, fmt.Errorf("failed to create store for type %q: %w", storeOptions.Type, err)
 		}
-		for _, scope := range storeOptions.Scopes {
+		// Normalize repository scopes so that they match the normalized
+		// references that the executor routes to the store.
+		for _, scope := range imageref.NormalizeScopes(storeOptions.Scopes) {
 			if err = storeMux.Register(scope, store); err != nil {
 				return nil, fmt.Errorf("failed to register store for scope %q: %w", scope, err)
 			}
